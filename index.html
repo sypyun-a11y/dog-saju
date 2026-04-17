@@ -933,6 +933,20 @@ function renderInput(sc) {
       <div class="form-section">강아지 정보 입력</div>
 
       <div>
+        <div class="form-label">🐾 견종 선택</div>
+        <div class="breed-scroll">
+          <div class="breed-grid" id="bgrid">
+            ${BREEDS.map(b=>`
+              <div class="breed-item${b===G.breed?' sel':''}" onclick="pickBreed('${b}')">
+                <canvas id="bc_${b.replace(/[\s()]/g,'')}" width="32" height="32" style="image-rendering:pixelated;"></canvas>
+                <div class="breed-name">${b}</div>
+              </div>`).join('')}
+          </div>
+        </div>
+        <div style="font-size:6px;color:#306230;margin-top:3px;text-align:right;">▼ 스크롤</div>
+      </div>
+
+      <div>
         <div class="form-label">이름</div>
         <input class="px-input" id="iname" type="text" placeholder="예) 뭉치" maxlength="6" value="${G.name}"/>
       </div>
@@ -946,20 +960,6 @@ function renderInput(sc) {
         <div class="form-label">🏠 입양날짜 (선택)</div>
         <input class="px-input" id="iadopt" type="date" value="${G.adopt}"/>
         <div style="font-size:7px;color:#306230;margin-top:4px;">함께한 일수를 알려드려요!</div>
-      </div>
-
-      <div>
-        <div class="form-label">견종 선택</div>
-        <div class="breed-scroll">
-          <div class="breed-grid" id="bgrid">
-            ${BREEDS.map(b=>`
-              <div class="breed-item${b===G.breed?' sel':''}" onclick="pickBreed('${b}')">
-                <canvas id="bc_${b.replace(/[\s()]/g,'')}" width="32" height="32" style="image-rendering:pixelated;"></canvas>
-                <div class="breed-name">${b}</div>
-              </div>`).join('')}
-          </div>
-        </div>
-        <div style="font-size:6px;color:#306230;margin-top:3px;text-align:right;">▼ 스크롤</div>
       </div>
 
       <button class="px-btn" onclick="goFortune()">🔮 사주 보기 ▶</button>
@@ -1162,10 +1162,15 @@ function dpad(dir) {
   }
 }
 
-// keyboard support
+// keyboard support - 입력창 포커스 중엔 게임 키 무시
+function isInputFocused() {
+  const t = document.activeElement && document.activeElement.tagName;
+  return t === 'INPUT' || t === 'TEXTAREA' || t === 'SELECT';
+}
 document.addEventListener('keydown', e => {
-  if(e.key==='Enter'||e.key===' ') pressA();
-  if(e.key==='Backspace') pressB();
+  if(isInputFocused()) return; // 입력 중엔 게임 키 차단
+  if(e.key==='Enter'||e.key===' ') { e.preventDefault(); pressA(); }
+  if(e.key==='Backspace') { e.preventDefault(); pressB(); }
   if(e.key==='ArrowRight'||e.key==='ArrowDown') { e.preventDefault(); dpad('right'); }
   if(e.key==='ArrowLeft'||e.key==='ArrowUp') { e.preventDefault(); dpad('left'); }
 });
