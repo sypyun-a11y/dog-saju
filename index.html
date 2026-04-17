@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🐾 왈왈 사주팔자</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #1a1a2e;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  font-family: 'Press Start 2P', monospace;
+}
+
+.gb {
+  background: linear-gradient(160deg, #b0bed0, #8b9dc3);
+  border-radius: 14px 14px 50px 50px;
+  padding: 16px 16px 28px;
+  width: 360px;
+  box-shadow: 4px 4px 0 #5a6a8a, -2px -2px 0 #c8d5f0, 0 24px 48px rgba(0,0,0,0.7);
+}
+
+.gb-label {
+  text-align: center;
+  font-size: 7px;
+  color: #4a5a7a;
+  margin-bottom: 6px;
+  letter-spacing: 2px;
+}
+
+.bezel {
+  background: #1e2030;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 14px;
+  box-shadow: inset 2px 2px 6px rgba(0,0,0,0.5);
+}
+
+.screen {
+  background: #9bbc0f;
+  border-radius: 4px;
+  width: 100%;
+  height: 260px;
+  position: relative;
+  overflow: hidden;
+}
+
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+@keyframes fadeIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
+@keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-3px)} 75%{transform:translateX(3px)} }
+@keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+
+.blink { animation: blink 1s infinite; }
+.bounce { animation: bounce 0.8s infinite; }
+.fade-in { animation: fadeIn 0.3s ease; }
+
+/* BUTTONS */
+.gb-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 8px;
+  margin-bottom: 10px;
+}
+
+.dpad {
+  display: grid;
+  grid-template: repeat(3,24px)/repeat(3,24px);
+  gap: 2px;
+}
+.dpad-btn {
+  background: #3a4a6a;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  color: #8b9dc3;
+  font-size: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.dpad-btn:hover { background: #4a5a7a; }
+.dpad-center { background: #2a3a5a !important; border-radius: 50% !important; cursor: default !important; }
+
+.ab-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 16px;
+}
+.ab-row { display: flex; gap: 8px; }
+.btn-circle {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  border: none;
+  background: #b03060;
+  color: white;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  cursor: pointer;
+  box-shadow: 2px 3px 0 #7a1a40;
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+.btn-circle:active { transform: translateY(2px); box-shadow: 0 1px 0 #7a1a40; }
+.btn-circle:hover { background: #c04070; }
+
+.start-select {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+.btn-flat {
+  width: 44px; height: 12px;
+  background: #3a4a6a;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.btn-flat:hover { background: #4a5a7a; }
+.btn-label {
+  display: flex;
+  justify-content: center;
+  gap: 36px;
+  margin-top: 3px;
+}
+.btn-label span { font-size: 5px; color: #4a5a7a; }
+
+/* SCREEN CONTENT */
+.s-full {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  gap: 8px;
+}
+
+.s-title {
+  font-size: 10px;
+  color: #0f380f;
+  text-align: center;
+  line-height: 2;
+  text-shadow: 1px 1px 0 #8bac0f;
+}
+
+.s-sub { font-size: 5px; color: #306230; text-align: center; line-height: 2; }
+.s-sm { font-size: 6px; color: #0f380f; }
+.s-xs { font-size: 5px; color: #0f380f; }
+.s-mid { font-size: 6px; color: #306230; }
+
+.dialogue {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: #9bbc0f;
+  border-top: 3px solid #0f380f;
+  padding: 8px;
+  min-height: 72px;
+}
+
+/* FORM */
+.form-scroll {
+  height: 100%;
+  overflow-y: auto;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  scrollbar-width: none;
+}
+.form-scroll::-webkit-scrollbar { display: none; }
+
+.form-section { font-size: 6px; color: #0f380f; border-bottom: 1px solid #306230; padding-bottom: 2px; }
+.form-label { font-size: 5px; color: #306230; margin-bottom: 3px; }
+
+.px-input {
+  width: 100%;
+  background: #8bac0f;
+  border: 2px solid #0f380f;
+  color: #0f380f;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 6px;
+  padding: 5px 4px;
+  outline: none;
+}
+.px-input:focus { background: #306230; color: #9bbc0f; }
+.px-input[type="date"] { cursor: pointer; }
+
+.breed-grid {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 3px;
+}
+.breed-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  padding: 3px 2px;
+  border: 2px solid transparent;
+  border-radius: 2px;
+}
+.breed-item:hover { border-color: #306230; }
+.breed-item.sel { border-color: #0f380f; background: #306230; }
+.breed-item canvas { image-rendering: pixelated; }
+.breed-name { font-size: 4px; color: #0f380f; margin-top: 2px; text-align: center; }
+.breed-item.sel .breed-name { color: #9bbc0f; }
+
+.px-btn {
+  background: #0f380f;
+  color: #9bbc0f;
+  border: none;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  padding: 7px;
+  cursor: pointer;
+  width: 100%;
+}
+.px-btn:hover { background: #306230; }
+
+/* RESULT */
+.result-header {
+  background: #0f380f;
+  color: #9bbc0f;
+  font-size: 6px;
+  padding: 5px 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.result-body {
+  flex: 1;
+  padding: 8px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.result-body::-webkit-scrollbar { display: none; }
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 5px;
+  color: #0f380f;
+  border-bottom: 1px solid #8bac0f;
+  padding: 3px 0;
+}
+.stat-bar {
+  display: flex;
+  gap: 2px;
+}
+.stat-pip {
+  width: 8px; height: 8px;
+  border: 1px solid #0f380f;
+  background: transparent;
+}
+.stat-pip.filled { background: #0f380f; }
+
+.tag {
+  display: inline-block;
+  background: #0f380f;
+  color: #9bbc0f;
+  font-size: 4px;
+  padding: 2px 4px;
+}
+
+.today-box {
+  background: #8bac0f;
+  border: 2px solid #0f380f;
+  padding: 5px;
+  font-size: 5px;
+  color: #0f380f;
+  line-height: 1.9;
+}
+
+.together-badge {
+  background: #306230;
+  color: #9bbc0f;
+  font-size: 5px;
+  padding: 4px 6px;
+  text-align: center;
+  border: 2px solid #0f380f;
+}
+</style>
+</head>
+<body>
+
+<div class="gb">
+  <div class="gb-label">🐾 WALGAME COLOR 🐾</div>
+  <div class="bezel">
+    <div class="screen" id="screen"></div>
+  </div>
+
+  <div class="gb-controls">
+    <div class="dpad">
+      <div></div>
+      <button class="dpad-btn" onclick="dpad('up')">▲</button>
+      <div></div>
+      <button class="dpad-btn" onclick="dpad('left')">◀</button>
+      <div class="dpad-btn dpad-center"></div>
+      <button class="dpad-btn" onclick="dpad('right')">▶</button>
+      <div></div>
+      <button class="dpad-btn" onclick="dpad('down')">▼</button>
+      <div></div>
+    </div>
+    <div class="ab-buttons">
+      <div class="ab-row">
+        <button class="btn-circle" onclick="pressB()" style="margin-top:8px;">B</button>
+        <button class="btn-circle" onclick="pressA()">A</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="start-select">
+    <button class="btn-flat" onclick="pressSelect()"></button>
+    <button class="btn-flat" onclick="pressStart()"></button>
+  </div>
+  <div class="btn-label">
+    <span>SELECT</span>
+    <span>START</span>
+  </div>
+</div>
+
+<script>
+// =============================================
+// PIXEL ART ENGINE
+// =============================================
+const S = 3; // pixel scale for breed selector (24px canvas / 8 cells = 3)
+const LS = 4; // large scale (48px / 12 cells)
+
+function drawDog(canvas, breed, gridSize) {
+  const ctx = canvas.getContext('2d');
+  const scale = canvas.width / gridSize;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const pxs = DOGS[breed] || DOGS['말티즈'];
+  pxs.forEach(([x, y, c]) => {
+    ctx.fillStyle = c;
+    ctx.fillRect(x * scale, y * scale, scale, scale);
+  });
+}
+
+// Color palettes
+const DOGS = {
+  '말티즈': (()=>{
+    const W='#f8f8f8',G='#d8d8d8',D='#1a1a1a',P='#ffb6c1',N='#222';
+    return [
+      [3,1,G],[4,1,G],[7,1,G],[8,1,G],
+      [2,2,W],[3,2,W],[4,2,W],[5,2,W],[6,2,W],[7,2,W],[8,2,W],[9,2,W],
+      [2,3,W],[3,3,W],[4,3,W],[5,3,W],[6,3,W],[7,3,W],[8,3,W],[9,3,W],
+      [2,4,W],[3,4,W],[4,4,W],[5,4,W],[6,4,W],[7,4,W],[8,4,W],[9,4,W],
+      [4,3,D],[7,3,D], // eyes
+      [5,4,D],[6,4,D], // nose
+      [5,5,W],[6,5,W],[5,5,P],
+      [2,5,G],[3,5,G],[8,5,G],[9,5,G],
+      [1,6,W],[2,6,W],[3,6,W],[4,6,W],[5,6,W],[6,6,W],[7,6,W],[8,6,W],[9,6,W],[10,6,W],
+      [1,7,W],[2,7,W],[3,7,W],[4,7,W],[5,7,W],[6,7,W],[7,7,W],[8,7,W],[9,7,W],[10,7,W],
+      [1,8,W],[2,8,W],[3,8,W],[4,8,W],[5,8,W],[6,8,W],[7,8,W],[8,8,W],[9,8,W],[10,8,W],
+      [2,9,G],[3,9,G],[4,9,G],[7,9,G],[8,9,G],[9,9,G],
+      [2,10,G],[3,10,G],[8,10,G],[9,10,G],
+      [10,7,G],[11,6,G],[11,5,G],
+    ];
+  })(),
+
+  '포메라니안': (()=>{
+    const O='#e8902a',L='#f4b84a',W='#fff5dc',D='#1a1a1a';
+    return [
+      [3,0,O],[4,0,L],[7,0,L],[8,0,O],
+      [2,1,O],[3,1,L],[4,1,L],[5,1,O],[6,1,O],[7,1,L],[8,1,L],[9,1,O],
+      [1,2,O],[2,2,O],[3,2,O],[4,2,O],[5,2,O],[6,2,O],[7,2,O],[8,2,O],[9,2,O],[10,2,O],
+      [1,3,O],[2,3,W],[3,3,W],[4,3,O],[5,3,O],[6,3,O],[7,3,W],[8,3,W],[9,3,O],[10,3,O],
+      [1,4,O],[2,4,O],[3,4,O],[4,4,O],[5,4,O],[6,4,O],[7,4,O],[8,4,O],[9,4,O],[10,4,O],
+      [3,3,D],[8,3,D], // eyes
+      [5,4,D],[6,4,D], // nose
+      [1,5,O],[2,5,L],[3,5,L],[4,5,O],[7,5,O],[8,5,L],[9,5,L],[10,5,O],
+      [1,6,O],[2,6,O],[3,6,O],[4,6,O],[5,6,O],[6,6,O],[7,6,O],[8,6,O],[9,6,O],[10,6,O],
+      [2,7,O],[3,7,L],[4,7,O],[5,7,O],[6,7,O],[7,7,O],[8,7,L],[9,7,O],
+      [3,8,O],[4,8,O],[5,8,O],[6,8,O],[7,8,O],[8,8,O],
+      [3,9,O],[4,9,O],[7,9,O],[8,9,O],
+      [3,10,L],[4,10,L],[7,10,L],[8,10,L],
+      [10,5,O],[11,4,O],[11,3,L],[10,3,L],
+    ];
+  })(),
+
+  '시바이누': (()=>{
+    const O='#cc5500',L='#e87722',W='#fff5e0',D='#1a1a1a';
+    return [
+      [3,0,O],[4,0,O],[7,0,O],[8,0,O],
+      [3,1,O],[4,1,O],[5,1,O],[6,1,O],[7,1,O],[8,1,O],
+      [2,2,O],[3,2,O],[4,2,O],[5,2,O],[6,2,O],[7,2,O],[8,2,O],[9,2,O],
+      [2,3,O],[3,3,W],[4,3,W],[5,3,O],[6,3,O],[7,3,W],[8,3,W],[9,3,O],
+      [2,4,O],[3,4,O],[4,4,O],[5,4,O],[6,4,O],[7,4,O],[8,4,O],[9,4,O],
+      [4,3,D],[7,3,D],
+      [5,4,D],[6,4,D],
+      [4,5,W],[5,5,W],[6,5,W],[7,5,W],
+      [5,5,D],
+      [2,5,O],[3,5,O],[8,5,O],[9,5,O],
+      [2,6,O],[3,6,O],[4,6,O],[5,6,O],[6,6,O],[7,6,O],[8,6,O],[9,6,O],
+      [2,7,O],[3,7,W],[4,7,W],[5,7,O],[6,7,O],[7,7,W],[8,7,W],[9,7,O],
+      [3,8,O],[4,8,O],[5,8,O],[6,8,O],[7,8,O],[8,8,O],
+      [3,9,O],[4,9,O],[7,9,O],[8,9,O],
+      [3,10,O],[4,10,O],[7,10,O],[8,10,O],
+      [10,6,O],[11,5,O],[11,4,L],[10,4,W],
+    ];
+  })(),
+
+  '웰시코기': (()=>{
+    const O='#d4821a',L='#f0a040',W='#fff8dc',D='#1a1a1a';
+    return [
+      [1,0,O],[2,0,O],[3,0,O],
+      [9,0,O],[10,0,O],[11,0,O],
+      [1,1,O],[2,1,O],[3,1,O],[4,1,O],
+      [8,1,O],[9,1,O],[10,1,O],[11,1,O],
+      [2,2,O],[3,2,O],[4,2,O],[5,2,O],[6,2,O],[7,2,O],[8,2,O],[9,2,O],
+      [2,3,O],[3,3,W],[4,3,W],[5,3,O],[6,3,O],[7,3,W],[8,3,W],[9,3,O],
+      [2,4,O],[3,4,O],[4,4,O],[5,4,W],[6,4,W],[7,4,O],[8,4,O],[9,4,O],
+      [4,3,D],[7,3,D],
+      [5,4,D],[6,4,D],
+      [3,5,W],[4,5,W],[5,5,W],[6,5,W],[7,5,W],[8,5,W],
+      [2,5,O],[9,5,O],
+      [2,6,O],[3,6,O],[4,6,O],[5,6,O],[6,6,O],[7,6,O],[8,6,O],[9,6,O],[10,6,O],
+      [2,7,O],[3,7,W],[4,7,W],[5,7,O],[6,7,O],[7,7,W],[8,7,W],[9,7,O],
+      [3,8,O],[4,8,O],[5,8,O],[6,8,O],[7,8,O],[8,8,O],
+      [3,9,O],[4,9,L],[7,9,O],[8,9,L],
+      [3,10,L],[4,10,L],[7,10,L],[8,10,L],
+      [10,6,O],[11,5,L],
+    ];
+  })(),
+
+  '골든리트리버': (()=>{
+    const G='#c89018',L='#f0c040',D='#1a1a1a',B='#7a5010';
+    return [
+      [2,1,G],[2,2,G],[2,3,G],[2,4,G],[2,5,G],[2,6,G],
+      [9,1,G],[9,2,G],[9,3,G],[9,4,G],[9,5,G],[9,6,G],
+      [3,1,G],[4,1,L],[5,1,L],[6,1,L],[7,1,L],[8,1,G],
+      [3,2,G],[4,2,L],[5,2,G],[6,2,G],[7,2,L],[8,2,G],
+      [3,3,G],[4,3,G],[5,3,G],[6,3,G],[7,3,G],[8,3,G],
+      [3,4,G],[4,4,G],[5,4,G],[6,4,G],[7,4,G],[8,4,G],
+      [4,2,D],[7,2,D],
+      [5,3,D],[6,3,D],
+      [4,4,L],[5,4,L],[6,4,L],[7,4,L],
+      [5,4,D],
+      [3,5,L],[4,5,L],[5,5,L],[6,5,L],[7,5,L],[8,5,L],
+      [2,6,G],[3,6,G],[4,6,L],[5,6,L],[6,6,L],[7,6,L],[8,6,G],[9,6,G],
+      [2,7,G],[3,7,G],[4,7,G],[5,7,G],[6,7,G],[7,7,G],[8,7,G],[9,7,G],
+      [3,8,G],[4,8,L],[5,8,L],[6,8,L],[7,8,L],[8,8,G],
+      [3,9,G],[4,9,G],[7,9,G],[8,9,G],
+      [3,10,G],[4,10,G],[7,10,G],[8,10,G],
+      [3,11,B],[4,11,B],[7,11,B],[8,11,B],
+      [10,6,G],[11,5,G],[12,4,L],[12,3,L],
+    ];
+  })(),
+
+  '푸들': (()=>{
+    const W='#f0f0f0',C='#d0d0d0',D='#1a1a1a',P='#ffb6c1';
+    return [
+      [4,0,W],[5,0,C],[6,0,W],[7,0,C],[8,0,W],
+      [3,1,W],[4,1,C],[5,1,W],[6,1,C],[7,1,W],[8,1,C],[9,1,W],
+      [3,2,W],[4,2,W],[5,2,W],[6,2,W],[7,2,W],[8,2,W],[9,2,W],
+      [6,1,P],[7,1,P],
+      [3,3,W],[4,3,C],[5,3,W],[6,3,W],[7,3,W],[8,3,C],[9,3,W],
+      [4,3,D],[8,3,D],
+      [6,4,D],[7,4,D],
+      [5,4,W],[8,4,W],
+      [5,5,W],[6,5,W],[7,5,W],[8,5,W],
+      [3,5,W],[4,5,C],[9,5,W],[10,5,C],
+      [3,6,W],[4,6,C],[5,6,W],[6,6,W],[7,6,W],[8,6,W],[9,6,C],[10,6,W],
+      [3,7,W],[4,7,W],[5,7,C],[6,7,W],[7,7,W],[8,7,C],[9,7,W],[10,7,W],
+      [4,8,C],[5,8,W],[6,8,W],[7,8,W],[8,8,W],[9,8,C],
+      [4,9,W],[5,9,C],[8,9,W],[9,9,C],
+      [4,10,C],[5,10,C],[8,10,C],[9,10,C],
+      [4,11,W],[5,11,W],[8,11,W],[9,11,W],
+      [11,5,W],[12,4,C],[12,3,W],
+    ];
+  })(),
+
+  '진돗개': (()=>{
+    const W='#f5f5f5',T='#c8a060',D='#1a1a1a';
+    return [
+      [4,0,T],[5,0,W],[5,1,W],[4,1,W],
+      [7,0,T],[8,0,W],[8,1,W],[7,1,W],
+      [3,2,W],[4,2,W],[5,2,W],[6,2,W],[7,2,W],[8,2,W],[9,2,W],
+      [2,3,W],[3,3,T],[4,3,T],[5,3,W],[6,3,W],[7,3,W],[8,3,T],[9,3,T],[10,3,W],
+      [2,4,W],[3,4,W],[4,4,W],[5,4,W],[6,4,W],[7,4,W],[8,4,W],[9,4,W],[10,4,W],
+      [4,3,D],[8,3,D],
+      [5,4,D],[6,4,D],
+      [4,5,W],[5,5,W],[6,5,W],[7,5,W],[8,5,W],
+      [2,5,W],[3,5,W],[9,5,W],[10,5,W],
+      [2,6,W],[3,6,W],[4,6,W],[5,6,W],[6,6,W],[7,6,W],[8,6,W],[9,6,W],[10,6,W],
+      [2,7,W],[3,7,T],[4,7,T],[5,7,W],[6,7,W],[7,7,W],[8,7,T],[9,7,T],[10,7,W],
+      [3,8,W],[4,8,W],[5,8,W],[6,8,W],[7,8,W],[8,8,W],[9,8,W],
+      [3,9,W],[4,9,W],[7,9,W],[8,9,W],
+      [3,10,W],[4,10,W],[7,10,W],[8,10,W],
+      [10,5,W],[11,4,W],[11,3,T],[10,3,T],
+    ];
+  })(),
+
+  '치와와': (()=>{
+    const B='#c8a060',W='#fff8e0',D='#1a1a1a',L='#e0b878';
+    return [
+      [0,1,B],[1,1,B],[1,2,B],[1,3,B],
+      [11,1,B],[12,1,B],[11,2,B],[11,3,B],
+      [2,1,B],[3,1,B],[4,1,B],[5,1,B],[6,1,B],[7,1,B],[8,1,B],[9,1,B],[10,1,B],
+      [2,2,B],[3,2,W],[4,2,W],[5,2,B],[6,2,B],[7,2,W],[8,2,W],[9,2,B],[10,2,B],
+      [2,3,B],[3,3,B],[4,3,B],[5,3,B],[6,3,B],[7,3,B],[8,3,B],[9,3,B],[10,3,B],
+      [3,2,D],[4,2,D],[7,2,D],[8,2,D],
+      [5,3,D],[6,3,D],
+      [4,4,W],[5,4,W],[6,4,W],[7,4,W],
+      [3,4,B],[8,4,B],
+      [3,5,B],[4,5,B],[5,5,W],[6,5,W],[7,5,B],[8,5,B],
+      [2,6,B],[3,6,B],[4,6,B],[5,6,B],[6,6,B],[7,6,B],[8,6,B],[9,6,B],
+      [2,7,B],[3,7,L],[4,7,L],[5,7,B],[6,7,B],[7,7,L],[8,7,L],[9,7,B],
+      [3,8,B],[4,8,B],[7,8,B],[8,8,B],
+      [3,9,B],[4,9,B],[7,9,B],[8,9,B],
+      [3,10,B],[4,10,B],[7,10,B],[8,10,B],
+      [9,7,B],[10,6,B],[10,5,L],
+    ];
+  })(),
+};
+
+const BREEDS = ['말티즈','포메라니안','시바이누','웰시코기','골든리트리버','푸들','진돗개','치와와'];
+
+// =============================================
+// FORTUNE ENGINE
+// =============================================
+const ZODIAC = ['쥐','소','호랑이','토끼','용','뱀','말','양','원숭이','닭','개','돼지'];
+const ELEMENTS = ['목','화','토','금','수'];
+const ELEM_DESC = { '목':'창의적', '화':'열정적', '토':'안정적', '금':'강인한', '수':'유연한' };
+
+function getZodiac(y) { return ZODIAC[(y - 4) % 12]; }
+function getElement(y) { return ELEMENTS[Math.floor(((y - 4) % 10) / 2)]; }
+function getSeason(m) {
+  if(m>=3&&m<=5) return '봄'; if(m>=6&&m<=8) return '여름';
+  if(m>=9&&m<=11) return '가을'; return '겨울';
+}
+
+function daysBetween(d1, d2) {
+  const a = new Date(d1), b = new Date(d2);
+  return Math.floor(Math.abs(b - a) / (1000*60*60*24));
+}
+
+const FORTUNE_DB = {
+  '쥐':  { trait:'영리하고 재치있음', lucky:'치즈간식', warn:'과식주의', love:4, health:3, money:5 },
+  '소':  { trait:'듬직하고 믿음직함', lucky:'긴 산책', warn:'스트레스', love:3, health:4, money:4 },
+  '호랑이': { trait:'용감하고 독립적', lucky:'터그놀이', warn:'싸움조심', love:4, health:5, money:3 },
+  '토끼': { trait:'온순하고 사랑스러움', lucky:'낮잠', warn:'큰소리', love:5, health:3, money:4 },
+  '용':  { trait:'카리스마 넘침', lucky:'공놀이', warn:'지루함금지', love:3, health:5, money:5 },
+  '뱀':  { trait:'신비롭고 직관적', lucky:'햇빛쬐기', warn:'찬바람', love:4, health:4, money:4 },
+  '말':  { trait:'활발하고 자유로움', lucky:'전력질주', warn:'좁은공간', love:3, health:5, money:3 },
+  '양':  { trait:'다정하고 섬세함', lucky:'마사지', warn:'외로움', love:5, health:4, money:3 },
+  '원숭이': { trait:'호기심 많고 장난꾸러기', lucky:'새장난감', warn:'심심함', love:4, health:4, money:4 },
+  '닭':  { trait:'부지런하고 꼼꼼함', lucky:'그루밍', warn:'불규칙식사', love:3, health:5, money:5 },
+  '개':  { trait:'충직하고 용감함', lucky:'주인곁에', warn:'분리불안', love:5, health:4, money:3 },
+  '돼지': { trait:'낙천적이고 먹보', lucky:'맛있는밥', warn:'다이어트', love:4, health:3, money:5 },
+};
+
+const BREED_MSG = {
+  '말티즈': '귀여움 스탯 MAX. 눈빛 한번으로 세상을 지배하는 날.',
+  '포메라니안': '솜사탕 매력 폭발! 오늘 특별한 간식이 기다려요.',
+  '시바이누': '도도하지만 다 알고 있음. 오늘은 주인을 봐주기로 결정.',
+  '웰시코기': '엉덩이 흔들며 세계정복! 달리기 운이 폭발하는 날.',
+  '골든리트리버': '세상 모두가 친구! 오늘 만나는 모든 존재를 사랑해.',
+  '푸들': '지능 1위. 오늘은 주인 훈련시키기 딱 좋은 날.',
+  '진돗개': '한국의 자존심. 오늘 영역 순찰은 필수.',
+  '치와와': '작지만 당차게! 몸집 10배 개한테도 먼저 짖어도 되는 날.',
+};
+
+const SEASON_MSG = {
+  '봄': '봄꽃처럼 밝은 기운! 오늘 새 친구 사귀기 최적의 날.',
+  '여름': '뜨거운 에너지 넘침! 오늘 산책은 특별한 모험이 될 거야.',
+  '가을': '풍요로운 가을 기운! 오늘 간식 운 폭발. 주인에게 눈빛 공격!',
+  '겨울': '강인한 겨울 기운! 오늘은 따뜻하게 주인과 함께하는 날.',
+};
+
+function stars(n) {
+  return '★'.repeat(n) + '☆'.repeat(5-n);
+}
+
+function makeFortune(name, breed, birth, adopt) {
+  const bd = new Date(birth);
+  const zodiac = getZodiac(bd.getFullYear());
+  const element = getElement(bd.getFullYear());
+  const season = getSeason(bd.getMonth()+1);
+  const fd = FORTUNE_DB[zodiac] || FORTUNE_DB['개'];
+  const today = new Date().toISOString().split('T')[0];
+  const agedays = daysBetween(birth, today);
+  const togetherdays = adopt ? daysBetween(adopt, today) : null;
+  const years = Math.floor(agedays/365);
+  const months = Math.floor((agedays%365)/30);
+  return { zodiac, element, season, fd, breed, name, birth, adopt, agedays, togetherdays, years, months };
+}
+
+// =============================================
+// GAME STATE
+// =============================================
+let G = {
+  screen: 'title',
+  name: '', breed: '말티즈', birth: '', adopt: '',
+  fortune: null,
+  rPage: 0,
+};
+
+// =============================================
+// RENDER
+// =============================================
+function render() {
+  const sc = document.getElementById('screen');
+  sc.className = 'screen fade-in';
+  if (G.screen === 'title') renderTitle(sc);
+  else if (G.screen === 'input') renderInput(sc);
+  else if (G.screen === 'loading') renderLoading(sc);
+  else if (G.screen === 'result') renderResult(sc);
+}
+
+function renderTitle(sc) {
+  sc.innerHTML = `
+    <div class="s-full">
+      <div class="s-title">🐾 왈왈<br>사주팔자</div>
+      <canvas id="tc" width="48" height="48" style="image-rendering:pixelated;" class="bounce"></canvas>
+      <div class="s-sub">내 강아지의 운명을<br>알아보세요!</div>
+      <div class="s-mid blink" style="font-size:6px;">▶ A버튼 또는 START</div>
+    </div>`;
+  setTimeout(()=>{ const c=document.getElementById('tc'); if(c) drawDog(c,'시바이누',12); },30);
+}
+
+function renderInput(sc) {
+  sc.innerHTML = `
+    <div class="form-scroll">
+      <div class="form-section">강아지 정보 입력</div>
+
+      <div>
+        <div class="form-label">이름</div>
+        <input class="px-input" id="iname" type="text" placeholder="예) 뭉치" maxlength="6" value="${G.name}"/>
+      </div>
+
+      <div>
+        <div class="form-label">🎂 생일</div>
+        <input class="px-input" id="ibirth" type="date" value="${G.birth}"/>
+      </div>
+
+      <div>
+        <div class="form-label">🏠 입양날짜 (선택)</div>
+        <input class="px-input" id="iadopt" type="date" value="${G.adopt}"/>
+        <div style="font-size:4px;color:#306230;margin-top:2px;">입력하면 함께한 날수를 알려드려요!</div>
+      </div>
+
+      <div>
+        <div class="form-label">견종 선택</div>
+        <div class="breed-grid" id="bgrid">
+          ${BREEDS.map(b=>`
+            <div class="breed-item${b===G.breed?' sel':''}" onclick="pickBreed('${b}')">
+              <canvas id="bc_${b.replace(/\s/g,'')}" width="24" height="24" style="image-rendering:pixelated;"></canvas>
+              <div class="breed-name">${b}</div>
+            </div>`).join('')}
+        </div>
+      </div>
+
+      <button class="px-btn" onclick="goFortune()">🔮 사주 보기 ▶</button>
+    </div>`;
+
+  setTimeout(()=>{
+    BREEDS.forEach(b=>{
+      const c=document.getElementById('bc_'+b.replace(/\s/g,''));
+      if(c) drawDog(c,b,12);
+    });
+  },30);
+}
+
+function pickBreed(b) {
+  G.breed = b;
+  renderInput(document.getElementById('screen'));
+}
+
+function goFortune() {
+  G.name = document.getElementById('iname').value.trim();
+  G.birth = document.getElementById('ibirth').value;
+  G.adopt = document.getElementById('iadopt').value;
+  if(!G.name || !G.birth) {
+    document.getElementById('iname').style.borderColor='#c03030';
+    setTimeout(()=>{ if(document.getElementById('iname')) document.getElementById('iname').style.borderColor='#0f380f'; },800);
+    return;
+  }
+  G.fortune = makeFortune(G.name, G.breed, G.birth, G.adopt||null);
+  G.screen = 'loading';
+  G.rPage = 0;
+  render();
+  setTimeout(()=>{ G.screen='result'; render(); }, 2200);
+}
+
+const LOAD_MSGS = [
+  '천지인 기운을\n읽는 중...',
+  '별자리 계산 중...',
+  '운명의 실\n엮는 중...',
+];
+let loadIdx = 0;
+
+function renderLoading(sc) {
+  loadIdx = 0;
+  sc.innerHTML = `
+    <div class="s-full">
+      <canvas id="lc" width="48" height="48" style="image-rendering:pixelated;" class="bounce"></canvas>
+      <div class="s-sm" id="lmsg" style="text-align:center;line-height:2;">${LOAD_MSGS[0]}</div>
+      <div style="display:flex;gap:5px;">
+        <div style="width:7px;height:7px;background:#0f380f;animation:blink .5s 0s infinite;"></div>
+        <div style="width:7px;height:7px;background:#0f380f;animation:blink .5s .2s infinite;"></div>
+        <div style="width:7px;height:7px;background:#0f380f;animation:blink .5s .4s infinite;"></div>
+      </div>
+    </div>`;
+  setTimeout(()=>{ const c=document.getElementById('lc'); if(c) drawDog(c,G.breed,12); },30);
+  const iv = setInterval(()=>{
+    loadIdx = (loadIdx+1)%LOAD_MSGS.length;
+    const el = document.getElementById('lmsg');
+    if(el) el.innerHTML = LOAD_MSGS[loadIdx].replace('\n','<br>');
+    else clearInterval(iv);
+  }, 700);
+}
+
+function renderResult(sc) {
+  const f = G.fortune;
+  const pages = [buildPage0(f), buildPage1(f), buildPage2(f)];
+  sc.innerHTML = pages[G.rPage];
+  setTimeout(()=>{
+    const c=document.getElementById('rc');
+    if(c) drawDog(c,G.breed,12);
+  },30);
+}
+
+function buildPage0(f) {
+  const together = f.togetherdays !== null
+    ? `<div class="together-badge">🏠 함께한지 <span style="color:#9bbc0f;font-size:7px;">${f.togetherdays}</span>일째!</div>`
+    : '';
+  return `
+    <div style="height:100%;display:flex;flex-direction:column;">
+      <div class="result-header">
+        <span>${f.name}의 사주</span>
+        <span style="font-size:5px;" class="blink">1/3</span>
+      </div>
+      <div class="result-body">
+        <div style="display:flex;gap:8px;align-items:center;">
+          <canvas id="rc" width="48" height="48" style="image-rendering:pixelated;flex-shrink:0;"></canvas>
+          <div style="display:flex;flex-direction:column;gap:4px;">
+            <div><span class="tag">${f.zodiac}띠</span> <span class="tag">${f.element}(${ELEM_DESC[f.element]})</span></div>
+            <div class="s-xs">${f.season}생 · ${f.years}살 ${f.months}개월</div>
+            <div class="s-xs" style="line-height:1.8;">${f.fd.trait}</div>
+          </div>
+        </div>
+        ${together}
+        <div class="today-box">${BREED_MSG[f.breed]}</div>
+      </div>
+      <div style="border-top:2px solid #0f380f;padding:5px 8px;background:#8bac0f;display:flex;justify-content:space-between;align-items:center;">
+        <span class="s-xs">A: 다음 페이지</span>
+        <span class="s-xs blink">▶▶</span>
+      </div>
+    </div>`;
+}
+
+function buildPage1(f) {
+  function bar(n) {
+    return `<div class="stat-bar">${[1,2,3,4,5].map(i=>`<div class="stat-pip${i<=n?' filled':''}"></div>`).join('')}</div>`;
+  }
+  return `
+    <div style="height:100%;display:flex;flex-direction:column;">
+      <div class="result-header">
+        <span>오늘의 운세</span>
+        <span style="font-size:5px;" class="blink">2/3</span>
+      </div>
+      <div class="result-body">
+        <div class="stat-row"><span>💕 애정운</span>${bar(f.fd.love)}</div>
+        <div class="stat-row"><span>🦴 건강운</span>${bar(f.fd.health)}</div>
+        <div class="stat-row"><span>🍖 간식운</span>${bar(f.fd.money)}</div>
+        <div style="height:6px;"></div>
+        <div class="today-box">
+          <div style="margin-bottom:3px;">🍀 럭키템: ${f.fd.lucky}</div>
+          <div style="margin-bottom:3px;">⚠️ 주의: ${f.fd.warn}</div>
+          <div>${SEASON_MSG[f.season]}</div>
+        </div>
+      </div>
+      <div style="border-top:2px solid #0f380f;padding:5px 8px;background:#8bac0f;display:flex;justify-content:space-between;">
+        <span class="s-xs">B: 이전</span>
+        <span class="s-xs blink">▶▶ A: 다음</span>
+      </div>
+    </div>`;
+}
+
+function buildPage2(f) {
+  const adopt = f.adopt
+    ? `<div class="s-xs" style="text-align:center;">🏠 ${f.adopt} 입양<br>함께한 ${f.togetherdays}일이 소중해요</div>`
+    : '';
+  return `
+    <div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:12px;">
+      <canvas id="rc" width="48" height="48" style="image-rendering:pixelated;" class="bounce"></canvas>
+      <div class="s-sm" style="text-align:center;line-height:2.2;">${f.name}(이)는<br>오늘도 최고야! 🐾</div>
+      ${adopt}
+      <div class="s-xs" style="color:#306230;text-align:center;line-height:2;">주인아 간식줘<br>사주에 나와있어</div>
+      <button class="px-btn" onclick="resetGame()" style="font-size:6px;padding:5px;">↩ 다시하기</button>
+    </div>`;
+}
+
+function resetGame() {
+  G = { screen:'title', name:'', breed:'말티즈', birth:'', adopt:'', fortune:null, rPage:0 };
+  render();
+}
+
+// =============================================
+// CONTROLS
+// =============================================
+function pressA() {
+  if(G.screen==='title') { G.screen='input'; render(); }
+  else if(G.screen==='result') { G.rPage=(G.rPage+1)%3; renderResult(document.getElementById('screen')); }
+}
+function pressB() {
+  if(G.screen==='input') { G.screen='title'; render(); }
+  else if(G.screen==='result') { G.rPage=Math.max(0,G.rPage-1); renderResult(document.getElementById('screen')); }
+}
+function pressStart() {
+  if(G.screen==='title') { G.screen='input'; render(); }
+  else if(G.screen==='input') goFortune();
+}
+function pressSelect() {}
+function dpad(dir) {
+  if(G.screen==='result') {
+    if(dir==='right'||dir==='down') pressA();
+    if(dir==='left'||dir==='up') pressB();
+  }
+}
+
+// keyboard support
+document.addEventListener('keydown', e => {
+  if(e.key==='Enter'||e.key===' ') pressA();
+  if(e.key==='Backspace') pressB();
+  if(e.key==='ArrowRight'||e.key==='ArrowDown') { e.preventDefault(); dpad('right'); }
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp') { e.preventDefault(); dpad('left'); }
+});
+
+render();
+</script>
+</body>
+</html>
